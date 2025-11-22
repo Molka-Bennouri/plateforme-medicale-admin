@@ -1,10 +1,11 @@
 package com.medical.platform.entity;
 import jakarta.persistence.*;
-
+import lombok.Data;
 import java.util.List;
 
 @Entity
-@Table(name = "secretaire ")
+@Table(name = "secretaire")
+@Data
 public class Secretaire {
     @Id
     private Integer id;

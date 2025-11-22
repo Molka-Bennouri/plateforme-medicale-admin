@@ -1,7 +1,7 @@
 package com.medical.platform.entity;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 import lombok.Data;
-
 import java.time.LocalDateTime;
 
 @Entity
@@ -14,13 +14,17 @@ public class RendezVous {
 
     @ManyToOne
     @JoinColumn(name = "patient_id", nullable = false)
+    @NotNull(message = "Le patient est obligatoire")
     private Patient patient;
 
     @ManyToOne
     @JoinColumn(name = "medecin_id", nullable = false)
+    @NotNull(message = "Le médecin est obligatoire")
     private Medecin medecin;
 
     @Column(name = "date_heure", nullable = false)
+    @NotNull(message = "La date et l'heure sont obligatoires")
+    @Future(message = "La date doit être dans le futur")
     private LocalDateTime dateHeure;
 
     @Enumerated(EnumType.STRING)
@@ -33,10 +37,27 @@ public class RendezVous {
     @Column(name = "ordonnance", columnDefinition = "TEXT")
     private String ordonnance;
 
+    @Column(name = "motif", columnDefinition = "TEXT")
+    private String motif;
+
     @Column(name = "date_creation")
     private LocalDateTime dateCreation;
 
+    @Column(name = "date_modification")
+    private LocalDateTime dateModification;
+
     public enum StatutRendezVous {
         planifie, confirme, annule, termine
+    }
+
+    @PrePersist
+    protected void onCreate() {
+        dateCreation = LocalDateTime.now();
+        dateModification = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        dateModification = LocalDateTime.now();
     }
 }

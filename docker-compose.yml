@@ -1,0 +1,68 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: medical-platform-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: plateforme_medicale
+      MYSQL_USER: medical_user
+      MYSQL_PASSWORD: medical_password
+      MYSQL_ROOT_HOST: '%'
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./src/main/resources/init-database.sql:/docker-entrypoint-initdb.d/01-init.sql
+      - ./src/main/resources/test-data.sql:/docker-entrypoint-initdb.d/02-test-data.sql
+    networks:
+      - medical-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: medical-platform-app
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/plateforme_medicale
+      SPRING_DATASOURCE_USERNAME: medical_user
+      SPRING_DATASOURCE_PASSWORD: medical_password
+      JWT_SECRET: MyVeryLongSecretKeyForJWTTokenGenerationThatIsAtLeast256bits
+      JWT_EXPIRATION: 86400000
+    ports:
+      - "8080:8080"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - medical-network
+    restart: unless-stopped
+
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: medical-platform-phpmyadmin
+    environment:
+      PMA_HOST: mysql
+      PMA_USER: medical_user
+      PMA_PASSWORD: medical_password
+      PMA_ROOT_PASSWORD: root_password
+    ports:
+      - "8081:80"
+    depends_on:
+      - mysql
+    networks:
+      - medical-network
+
+volumes:
+  mysql_data:
+    driver: local
+
+networks:
+  medical-network:
+    driver: bridge
+

@@ -1,0 +1,454 @@
+{
+  "info": {
+    "name": "Plateforme Médicale API",
+    "description": "Collection complète pour tester l'API de la Plateforme Médicale",
+    "version": "1.0.0"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8080/api"
+    },
+    {
+      "key": "token",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Login Médecin",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"jean.dupont@medical.com\",\n  \"motDePasse\": \"password123\"\n}"
+            },
+            "url": "{{base_url}}/auth/login"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "  var jsonData = pm.response.json();",
+                  "  pm.environment.set('token', jsonData.token);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Login Patient",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"marie.bernard@example.com\",\n  \"motDePasse\": \"password123\"\n}"
+            },
+            "url": "{{base_url}}/auth/login"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "  var jsonData = pm.response.json();",
+                  "  pm.environment.set('token', jsonData.token);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Validate Token",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": "{{base_url}}/auth/validate/{{token}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Utilisateurs",
+      "item": [
+        {
+          "name": "Get All Users",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": "{{base_url}}/utilisateurs"
+          }
+        },
+        {
+          "name": "Get Active Users",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": "{{base_url}}/utilisateurs/actifs"
+          }
+        },
+        {
+          "name": "Get User by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": "{{base_url}}/utilisateurs/2"
+          }
+        },
+        {
+          "name": "Get User by Email",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": "{{base_url}}/utilisateurs/email/jean.dupont@medical.com"
+          }
+        },
+        {
+          "name": "Create User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nom\": \"Nouveau\",\n  \"prenom\": \"Utilisateur\",\n  \"email\": \"nouveau@example.com\",\n  \"motDePasse\": \"password123\",\n  \"typeUtilisateur\": \"patient\"\n}"
+            },
+            "url": "{{base_url}}/utilisateurs"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Médecins",
+      "item": [
+        {
+          "name": "Get All Doctors",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": "{{base_url}}/medecins"
+          }
+        },
+        {
+          "name": "Get Active Doctors",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": "{{base_url}}/medecins/actifs"
+          }
+        },
+        {
+          "name": "Get Doctors by Specialty",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": "{{base_url}}/medecins/specialite/1"
+          }
+        },
+        {
+          "name": "Create Doctor",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nom\": \"Nouveau\",\n  \"prenom\": \"Médecin\",\n  \"email\": \"nouveau.medecin@medical.com\",\n  \"motDePasse\": \"password123\",\n  \"telephone\": \"0123456789\",\n  \"adresse\": \"123 Rue Test\",\n  \"numeroLicence\": \"MED999999\",\n  \"specialiteId\": 1\n}"
+            },
+            "url": "{{base_url}}/medecins"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Patients",
+      "item": [
+        {
+          "name": "Get All Patients",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": "{{base_url}}/patients"
+          }
+        },
+        {
+          "name": "Get Patient by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": "{{base_url}}/patients/5"
+          }
+        },
+        {
+          "name": "Create Patient",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nom\": \"Nouveau\",\n  \"prenom\": \"Patient\",\n  \"email\": \"nouveau.patient@example.com\",\n  \"motDePasse\": \"password123\",\n  \"dateNaissance\": \"1990-01-15\",\n  \"telephone\": \"0687654321\"\n}"
+            },
+            "url": "{{base_url}}/patients"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Rendez-vous",
+      "item": [
+        {
+          "name": "Get All Appointments",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": "{{base_url}}/rendez-vous"
+          }
+        },
+        {
+          "name": "Get Appointments by Doctor",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": "{{base_url}}/rendez-vous/medecin/2"
+          }
+        },
+        {
+          "name": "Get Appointments by Patient",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": "{{base_url}}/rendez-vous/patient/5"
+          }
+        },
+        {
+          "name": "Create Appointment",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"patientId\": 5,\n  \"medecinId\": 2,\n  \"dateHeure\": \"2025-01-15T10:30:00\",\n  \"motif\": \"Consultation cardiologie\"\n}"
+            },
+            "url": "{{base_url}}/rendez-vous"
+          }
+        },
+        {
+          "name": "Confirm Appointment",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": "{{base_url}}/rendez-vous/1/confirmer"
+          }
+        },
+        {
+          "name": "Cancel Appointment",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": "{{base_url}}/rendez-vous/2/annuler"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Statistiques",
+      "item": [
+        {
+          "name": "General Statistics",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": "{{base_url}}/statistiques/general"
+          }
+        },
+        {
+          "name": "Doctors Statistics",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": "{{base_url}}/statistiques/medecins"
+          }
+        },
+        {
+          "name": "Evaluate Doctor",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": "{{base_url}}/statistiques/medecin/2/evaluation"
+          }
+        },
+        {
+          "name": "Upcoming Appointments",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": "{{base_url}}/statistiques/rendez-vous/avenir"
+          }
+        },
+        {
+          "name": "Confirmation Rate",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": "{{base_url}}/statistiques/confirmation/taux"
+          }
+        }
+      ]
+    }
+  ]
+}
+

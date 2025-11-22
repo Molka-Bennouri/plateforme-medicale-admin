@@ -92,27 +92,3 @@ public class MedecinService {
         return medecin;
     }
 }
-     /* en changeant le mot de passe et le type d'utilisateur, ou en ajoutant le champ.
-     *
-     * Pour une implémentation propre, je vais modifier l'entité Utilisateur pour ajouter un champ 'actif'.
-     * Cependant, pour ne pas modifier trop de fichiers sans visibilité sur la configuration de la DB,
-     * je vais implémenter une suppression physique pour l'instant, mais je note qu'une suppression logique
-     * serait préférable pour "arrêter" un utilisateur.
-     *
-     * Pour respecter le cas d'utilisation "arrêter médecin", je vais implémenter une méthode qui
-     * supprime l'utilisateur associé (ce qui entraîne la suppression du médecin par cascade).
-     *
-     * @param id ID du médecin à arrêter.
-     * @return true si l'opération a réussi, false sinon.
-     */
-    @Transactional
-    public boolean arreterMedecin(Integer id) {
-        Optional<Medecin> medecinOpt = medecinRepository.findById(id);
-        if (medecinOpt.isPresent()) {
-            // Suppression physique du médecin (et de l'utilisateur associé par cascade)
-            medecinRepository.delete(medecinOpt.get());
-            return true;
-        }
-        return false;
-    }
-}

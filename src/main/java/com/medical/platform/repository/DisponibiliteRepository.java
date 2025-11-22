@@ -14,5 +14,6 @@ public interface DisponibiliteRepository extends JpaRepository<Disponibilite, In
     @Query("SELECT d FROM Disponibilite d WHERE d.medecin.id = ?1 AND d.date.jour = ?2")
     List<Disponibilite> findByMedecinAndDate(Integer medecinId, LocalDate date);
 
+    @Query("SELECT d FROM Disponibilite d WHERE d.date.jour = ?1")
     List<Disponibilite> findByDateJour(LocalDate date);
 }

@@ -113,7 +113,6 @@ public class MedecinController {
             Medecin medecin = medecinOpt.get();
 
             // Mettre à jour les champs
-            medecin.getTelephone();
             medecin.setAdresse(medecinDTO.getAdresse());
             if (medecinDTO.getTelephone() != null) {
                 medecin.setTelephone(medecinDTO.getTelephone());

@@ -1,8 +1,12 @@
 package com.medical.platform.service;
 
 import com.medical.platform.entity.SecretaireMedecin;
+import com.medical.platform.entity.Medecin;
+import com.medical.platform.entity.Secretaire;
 import com.medical.platform.exception.ResourceNotFoundException;
 import com.medical.platform.repository.SecretaireMedecinRepository;
+import com.medical.platform.repository.MedecinRepository;
+import com.medical.platform.repository.SecretaireRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,6 +20,12 @@ public class SecretaireMedecinService {
 
     @Autowired
     private SecretaireMedecinRepository secretaireMedecinRepository;
+
+    @Autowired
+    private MedecinRepository medecinRepository;
+
+    @Autowired
+    private SecretaireRepository secretaireRepository;
 
     public List<SecretaireMedecin> findAll() {
         return secretaireMedecinRepository.findAll();
@@ -39,7 +49,14 @@ public class SecretaireMedecinService {
 
     @Transactional
     public SecretaireMedecin affecterSecretaire(Integer medecinId, Integer secretaireId) {
+        Medecin medecin = medecinRepository.findById(medecinId)
+                .orElseThrow(() -> new ResourceNotFoundException("Médecin non trouvé avec l'ID: " + medecinId));
+        Secretaire secretaire = secretaireRepository.findById(secretaireId)
+                .orElseThrow(() -> new ResourceNotFoundException("Secrétaire non trouvée avec l'ID: " + secretaireId));
+
         SecretaireMedecin affectation = new SecretaireMedecin();
+        affectation.setMedecin(medecin);
+        affectation.setSecretaire(secretaire);
         affectation.setDateAffectation(LocalDateTime.now());
 
         return secretaireMedecinRepository.save(affectation);
@@ -76,4 +93,5 @@ public class SecretaireMedecinService {
         throw new ResourceNotFoundException("Affectation non trouvée pour ce médecin et cette secrétaire");
     }
 }
+
 

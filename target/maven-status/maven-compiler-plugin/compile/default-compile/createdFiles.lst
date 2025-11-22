@@ -1,0 +1,6 @@
+com\medical\platform\config\CorsConfiguration.class
+com\medical\platform\controller\AuthController.class
+com\medical\platform\config\SecurityPasswordConfig.class
+com\medical\platform\MedicalPlatformApplication.class
+com\medical\platform\service\UtilisateurService.class
+com\medical\platform\config\OpenAPIConfiguration.class

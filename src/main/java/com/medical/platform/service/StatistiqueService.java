@@ -1,7 +1,6 @@
 package com.medical.platform.service;
 
 import com.medical.platform.entity.Medecin;
-import com.medical.platform.entity.Patient;
 import com.medical.platform.entity.RendezVous;
 import com.medical.platform.entity.Secretaire;
 import com.medical.platform.repository.MedecinRepository;
@@ -221,56 +220,5 @@ public class StatistiqueService {
         }
 
         return stats;
-    }
-}
-        Map<String, Object> evaluation = new HashMap<>();
-        Optional<Medecin> medecin = medecinRepository.findById(medecinId);
-
-        if (medecin.isEmpty()) {
-            evaluation.put("error", "Médecin non trouvé");
-            return evaluation;
-        }
-
-        List<RendezVous> rendezVousMedecin = rendezVousRepository.findByMedecin(medecin.get());
-        long totalRendezVous = rendezVousMedecin.size();
-        long rvConfirme = rendezVousMedecin.stream().filter(rv -> rv.getStatut() == RendezVous.StatutRendezVous.confirme).count();
-        long rvAnnule = rendezVousMedecin.stream().filter(rv -> rv.getStatut() == RendezVous.StatutRendezVous.annule).count();
-        long rvTermine = rendezVousMedecin.stream().filter(rv -> rv.getStatut() == RendezVous.StatutRendezVous.termine).count();
-
-        evaluation.put("medecinId", medecinId);
-        evaluation.put("totalRendezVous", totalRendezVous);
-        evaluation.put("rendezVousConfirmes", rvConfirme);
-        evaluation.put("rendezVousAnnules", rvAnnule);
-        evaluation.put("rendezVousTermines", rvTermine);
-        // Ajout d'un score simple
-        double score = totalRendezVous > 0 ? (double) rvTermine / totalRendezVous : 0.0;
-        evaluation.put("tauxDeCompletion", String.format("%.2f%%", score * 100));
-
-        return evaluation;
-    }
-
-    /**
-     * Évalue la performance d'une secrétaire (cas d'utilisation "évaluer secrétaire").
-     * Pour l'instant, nous nous basons sur le nombre de médecins affectés.
-     * @param secretaireId ID de la secrétaire.
-     * @return Map<String, Object> contenant les métriques de performance.
-     */
-    public Map<String, Object> evaluateSecretaire(Integer secretaireId) {
-        Map<String, Object> evaluation = new HashMap<>();
-        Optional<Secretaire> secretaire = secretaireRepository.findById(secretaireId);
-
-        if (secretaire.isEmpty()) {
-            evaluation.put("error", "Secrétaire non trouvée");
-            return evaluation;
-        }
-
-        // Le nombre de médecins affectés est une métrique simple pour l'évaluation
-        int medecinsAffectes = secretaire.get().getMedecinAffectations().size();
-
-        evaluation.put("secretaireId", secretaireId);
-        evaluation.put("medecinsAffectes", medecinsAffectes);
-        // D'autres métriques pourraient être ajoutées ici (ex: nombre de RV gérés par les médecins affectés)
-
-        return evaluation;
     }
 }

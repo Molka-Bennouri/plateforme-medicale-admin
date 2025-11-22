@@ -18,6 +18,9 @@ public class PatientDTO {
     @NotBlank(message = "L'email est obligatoire")
     private String email;
 
+    @NotBlank(message = "Le mot de passe est obligatoire")
+    private String motDePasse;
+
     @NotNull(message = "La date de naissance est obligatoire")
     @Past(message = "La date de naissance doit être dans le passé")
     private LocalDate dateNaissance;

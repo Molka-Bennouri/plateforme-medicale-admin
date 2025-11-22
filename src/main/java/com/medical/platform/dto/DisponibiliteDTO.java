@@ -14,7 +14,9 @@ public class DisponibiliteDTO {
 
     private String medecinNom;
 
-    @NotNull(message = "La date est obligatoire")
+    @NotNull(message = "L'ID de la date est obligatoire")
+    private Integer dateId;
+
     private LocalDate date;
 
     @NotNull(message = "L'heure de début est obligatoire")

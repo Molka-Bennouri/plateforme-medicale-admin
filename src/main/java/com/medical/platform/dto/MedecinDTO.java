@@ -17,6 +17,9 @@ public class MedecinDTO {
     @NotBlank(message = "L'email est obligatoire")
     private String email;
 
+    @NotBlank(message = "Le mot de passe est obligatoire")
+    private String motDePasse;
+
     @Pattern(regexp = "^[0-9\\s\\-\\+\\(\\)]+$", message = "Le numéro de téléphone n'est pas valide")
     private String telephone;
 
